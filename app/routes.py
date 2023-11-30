@@ -1,8 +1,7 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Blueprint
 from flask_restful import Resource, Api, reqparse
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required
 from werkzeug.security import generate_password_hash
-from config import Config
 from app.models import House, Booking, User
 from flask_restful import Api
 from app import db
@@ -132,12 +131,6 @@ class BookStay(Resource):
 
     if (datetime_date1 > datetime_date2):
         return {"message": "From date should be before to date."}, 400
-    
-    # Convert dates from string to int
-    # from_year, from_month, from_day = map(int, from_.split("-"))
-    # to_year, to_month, to_day = map(int, to.split("-"))
-
-    # print(from_year, from_month, from_day)
 
     if (house_id < 1):
         return {"message": "Invalid house id."}, 400
@@ -203,8 +196,7 @@ class UserRegistration(Resource):
             'message': 'User registration successful',
             'access_token': access_token
         }, 201
-
-
+    
 class UserLogin(Resource):
     def post(self):
         parser = reqparse.RequestParser()

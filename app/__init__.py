@@ -4,8 +4,6 @@ from flask_migrate import Migrate
 from config import Config
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask import send_from_directory
-from pathlib import Path
 
 db = SQLAlchemy()
 migrate = Migrate()

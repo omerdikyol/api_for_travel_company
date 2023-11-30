@@ -1,4 +1,3 @@
-from sqlalchemy import create_engine
 import urllib
 
 params = urllib.parse.quote_plus(r'Driver={ODBC Driver 18 for SQL Server};Server=tcp:travel-api.database.windows.net,1433;Database=travel_api;Uid=travel-apiadmin;Pwd=Trvl123!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
