@@ -1,0 +1,297 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Travel Company API",
+    "description": "This is a Travel Company API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "House": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "capacity": {
+            "type": "integer"
+          },
+          "available_dates": {
+            "type": "object"
+          }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "house_id": {
+            "type": "integer"
+          },
+          "house": {
+            "type": "object"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/query_houses": {
+      "post": {
+        "description": "Query houses from the database.",
+        "tags": [
+          "General"
+        ],
+        "summary": "Query Houses",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "house_id": 1,
+                  "from": "2023-08-09",
+                  "to": "2023-08-12",
+                  "people": 2,
+                  "page": 1,
+                  "limit": 10
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "id": 1,
+                      "houses": [
+                        {
+                          "id": 1,
+                          "name": "House 1",
+                          "description": "House 1 description",
+                          "amenities": [
+                            "Wifi",
+                            "TV"
+                          ],
+                          "capacity": 4,
+                          "available_dates": [
+                            "2023-08-09",
+                            "2023-08-10",
+                            "2023-08-11",
+                            "2023-08-12"
+                          ]
+                        }
+                      ],
+                      "total_results": 10,
+                      "current_page": 1,
+                      "total_pages": 2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/book_stay": {
+      "post": {
+        "description": "Book a stay.",
+        "tags": [
+          "General"
+        ],
+        "summary": "Book Stay",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "house_id": 1,
+                  "from": "2023-08-09",
+                  "to": "2023-08-12",
+                  "names": [
+                    "John",
+                    "Marie"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Booking successful.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Invalid parameters. / House capacity exceeded.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "House not available for booking.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/register": {
+      "post": {
+        "description": "Register a new user and return access token.",
+        "tags": [
+          "General"
+        ],
+        "summary": "Register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "username": "user2",
+                  "password": "123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registration successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMTM0NjY0MCwianRpIjoiZjJmZDk1MjQtYmI4Mi00MmRjLWExYWUtMGM1ZjEwYTk2NzQzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InVzZXIyIiwibmJmIjoxNzAxMzQ2NjQwLCJleHAiOjE3MDEzNDc1NDB9.vJo1PalkbdJJzmhFtv-cOLZ_mjomd9GiX8rGUCYkOj4"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/login": {
+      "post": {
+        "description": "Login a user and return access token.",
+        "tags": [
+          "General"
+        ],
+        "summary": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "username": "user2",
+                  "password": "123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User login successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMTM0NjY0MCwianRpIjoiZjJmZDk1MjQtYmI4Mi00MmRjLWExYWUtMGM1ZjEwYTk2NzQzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InVzZXIyIiwibmJmIjoxNzAxMzQ2NjQwLCJleHAiOjE3MDEzNDc1NDB9.vJo1PalkbdJJzmhFtv-cOLZ_mjomd9GiX8rGUCYkOj4"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User does not exist / Password is incorrect",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
